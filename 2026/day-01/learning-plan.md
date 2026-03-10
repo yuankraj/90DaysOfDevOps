@@ -53,10 +53,6 @@ Follow a daily learning schedule and complete small tasks every day.
 
 Practice through hands-on labs and projects, not just theory.
 
-Track progress publicly through #90DaysOfDevOps posts on LinkedIn.
-
-Review weekly progress and adjust the learning plan if needed.
-
 Final Goal
 
 By the end of these 90 days, I aim to build real DevOps projects, understand cloud infrastructure, and be confident deploying production-ready applications using modern DevOps tools.
