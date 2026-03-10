@@ -130,25 +130,28 @@ Common service operations:
 
 Start a service
 
-Plain 
+
 systemctl start nginx  
 
 Stop a service
 
-Plain 
+
 systemctl stop nginx 
 
 Check service status
 
-Plain 
+ 
 systemctl status nginx 
 
 Enable service at boot
 
-Plain 
+
 systemctl enable nginx 
 
+
+
 systemd improves system reliability by **automatically restarting failed services**.
+
 
 Daily Linux Commands for DevOps
 ===============================
@@ -157,35 +160,35 @@ These commands are commonly used for troubleshooting.
 
 **1\. ps**
 
-Plain 
+
 ps aux  
 
 Shows running processes.
 
 **2\. top**
 
-Plain   
+  
 top   
 
 Displays real-time CPU and memory usage.
 
 **3\. systemctl**
 
-Plain 
+
 systemctl status nginx
 
 Manages system services.
 
 **4\. journalctl**
 
-Plain 
+
 journalctl -u nginx   
 
 View service logs.
 
 **5\. kill**
 
-Plain 
+ 
 kill -9
 
 Stops a process manually.
