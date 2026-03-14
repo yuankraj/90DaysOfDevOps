@@ -27,7 +27,7 @@ Security Group Configuration:
 Instance Public IP:
 
 ```
-<your-instance-ip>
+<15.134.206.63/>
 ```
 
 ---
@@ -43,7 +43,7 @@ chmod 400 devops-key.pem
 Connect to server:
 
 ```bash
-ssh -i devops-key.pem ubuntu@<your-instance-ip>
+ssh -i devops-key.pem ubuntu@<15.134.206.63/>
 ```
 
 Observation  
@@ -134,7 +134,7 @@ Nginx installed successfully.
 Open browser and visit:
 
 ```
-http://<your-instance-ip>
+http://<15.134.206.63/>
 ```
 
 You should see the **Nginx welcome page**.
