@@ -1,0 +1,13 @@
+name: Vishal
+role: DevOps Engineer (Learning)
+experience_years: 0
+learning: true
+
+tools:
+  - linux
+  - docker
+  - git
+  - github
+  - kubernetes
+
+hobbies: [coding, learning-devops, reading-tech, problem-solving]
