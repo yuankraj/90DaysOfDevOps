@@ -1,0 +1,22 @@
+server:
+  name: app-server
+  ip: 192.168.1.10
+  port: 8080
+
+database:
+  host: db-server
+  name: devopsdb
+  credentials:
+    user: admin
+    password: securepassword
+
+startup_script_block: |
+  #!/bin/bash
+  echo "Starting application..."
+  systemctl start nginx
+  echo "Application started"
+
+startup_script_folded: >
+  echo "Initializing server"
+  echo "Running setup"
+  echo "Server ready"
