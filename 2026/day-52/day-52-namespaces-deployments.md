@@ -5,9 +5,9 @@
 # 📌 Task Overview
 
 Today I learned:
-- Kubernetes Namespaces (isolation)
-- Deployments (self-healing + scaling)
-- Rolling updates and rollbacks
+- Namespaces (environment isolation)
+- Deployments (self-healing pods)
+- Scaling and rolling updates
 
 ---
 
@@ -21,21 +21,22 @@ kubectl get namespaces
 
 ## Output
 
-- default
-- kube-system
-- kube-public
-- kube-node-lease
+- default  
+- kube-system  
+- kube-public  
+- kube-node-lease  
 
-## kube-system Pods
+---
+
+## Check kube-system Pods
 
 ```bash
 kubectl get pods -n kube-system
 ```
 
-These pods run core Kubernetes components like:
-- API server
-- scheduler
-- etcd
+### Observation
+
+These are Kubernetes internal components (API server, scheduler, etc.)
 
 ---
 
@@ -48,10 +49,21 @@ kubectl create namespace dev
 kubectl create namespace staging
 ```
 
-## Verify
+---
+
+## YAML (Namespace Manifest)
+
+```yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: production
+```
+
+Apply:
 
 ```bash
-kubectl get namespaces
+kubectl apply -f namespace.yaml
 ```
 
 ---
@@ -59,13 +71,13 @@ kubectl get namespaces
 ## Run Pods in Namespaces
 
 ```bash
-kubectl run nginx-dev --image=nginx:latest -n dev
-kubectl run nginx-staging --image=nginx:latest -n staging
+kubectl run nginx-dev --image=nginx -n dev
+kubectl run nginx-staging --image=nginx -n staging
 ```
 
 ---
 
-## Check Pods
+## Verify
 
 ```bash
 kubectl get pods
@@ -74,14 +86,14 @@ kubectl get pods -A
 
 ### Observation
 
-- `kubectl get pods` → shows default namespace only  
-- `kubectl get pods -A` → shows all namespaces  
+- Default → only default namespace  
+- -A → all namespaces  
 
 ---
 
 # ✅ Task 3: Deployment
 
-## File: nginx-deployment.yaml
+## YAML (Deployment Manifest)
 
 ```yaml
 apiVersion: apps/v1
@@ -122,15 +134,13 @@ kubectl get pods -n dev
 
 ## Output Meaning
 
-- READY → pods ready
-- UP-TO-DATE → updated pods
-- AVAILABLE → running pods
+- READY → running pods  
+- UP-TO-DATE → updated pods  
+- AVAILABLE → available pods  
 
 ---
 
 # ✅ Task 4: Self-Healing
-
-## Delete a Pod
 
 ```bash
 kubectl get pods -n dev
@@ -138,10 +148,10 @@ kubectl delete pod <pod-name> -n dev
 kubectl get pods -n dev
 ```
 
-## Observation
+### Observation
 
 - New pod created automatically  
-- Name is different  
+- Pod name is different  
 
 ---
 
@@ -151,19 +161,17 @@ kubectl get pods -n dev
 
 ```bash
 kubectl scale deployment nginx-deployment --replicas=5 -n dev
-kubectl get pods -n dev
 ```
 
 ## Scale Down
 
 ```bash
 kubectl scale deployment nginx-deployment --replicas=2 -n dev
-kubectl get pods -n dev
 ```
 
-## Observation
+### Observation
 
-- Extra pods are terminated when scaling down  
+Extra pods are removed automatically  
 
 ---
 
@@ -174,6 +182,8 @@ kubectl get pods -n dev
 ```bash
 kubectl set image deployment/nginx-deployment nginx=nginx:1.25 -n dev
 ```
+
+---
 
 ## Check Rollout
 
@@ -187,7 +197,6 @@ kubectl rollout status deployment/nginx-deployment -n dev
 
 ```bash
 kubectl rollout undo deployment/nginx-deployment -n dev
-kubectl rollout status deployment/nginx-deployment -n dev
 ```
 
 ---
@@ -200,7 +209,7 @@ kubectl describe deployment nginx-deployment -n dev | grep Image
 
 ### Observation
 
-Image reverted to previous version (nginx:1.24)
+Image reverted back to previous version  
 
 ---
 
@@ -210,7 +219,7 @@ Image reverted to previous version (nginx:1.24)
 kubectl delete deployment nginx-deployment -n dev
 kubectl delete pod nginx-dev -n dev
 kubectl delete pod nginx-staging -n staging
-kubectl delete namespace dev staging
+kubectl delete namespace dev staging production
 ```
 
 ---
@@ -219,79 +228,76 @@ kubectl delete namespace dev staging
 
 Add:
 
-- kubectl get deployments → `deployments.png`
-- kubectl get pods -A → `pods-all.png`
+- kubectl get deployments → deployments.png  
+- kubectl get pods -A → pods-all.png  
 
 ---
 
 # 💡 What I Learned
 
-1. Namespaces isolate environments (dev, staging, prod)  
-2. Deployments provide self-healing and scaling  
-3. Rolling updates allow zero downtime deployments  
+1. Namespaces isolate environments  
+2. Deployments provide self-healing  
+3. Scaling adjusts number of pods  
+4. Rolling updates ensure zero downtime  
 
 ---
 
 # 🚀 Key Concepts
 
 ## Namespace
-
-Logical isolation inside cluster
-
----
+Logical separation inside cluster
 
 ## Deployment
-
 Manages pods automatically
-
----
-
-## Pod vs Deployment
-
-| Pod | Deployment |
-|-----|-----------|
-| Manual | Automated |
-| No restart | Self-healing |
-| Single instance | Multiple replicas |
 
 ---
 
 # 🧠 Interview Answers
 
-### What happens if a pod is deleted in Deployment?
+### What happens when a pod is deleted?
 
-```
-New pod is automatically created
-```
+Deployment recreates it automatically  
 
 ---
 
-### What happens if a standalone pod is deleted?
+### What happens to standalone pod?
 
-```
-Pod is permanently gone
-```
+It is permanently deleted  
 
 ---
 
 ### What is scaling?
 
-```
-Increasing/decreasing number of pods
-```
+Increasing or decreasing number of pods  
 
 ---
 
 ### What is rolling update?
 
-```
-Updating pods one by one with zero downtime
-```
+Updating pods one by one without downtime  
 
 ---
 
 # 🚀 Summary
 
-Today I learned how Kubernetes Deployments manage pods automatically. I created namespaces, deployed applications, scaled them, and performed rolling updates with rollback.
+Today I learned how Kubernetes Deployments manage pods automatically. I created namespaces, scaled applications, and performed rolling updates with rollback.
 
-This is how real-world production systems run in Kubernetes.
+---
+
+# ⚡ Commands Used
+
+```bash
+kubectl get namespaces
+kubectl create namespace dev
+kubectl create namespace staging
+kubectl apply -f namespace.yaml
+kubectl run nginx-dev --image=nginx -n dev
+kubectl run nginx-staging --image=nginx -n staging
+kubectl apply -f nginx-deployment.yaml
+kubectl get deployments -n dev
+kubectl get pods -A
+kubectl scale deployment nginx-deployment --replicas=5 -n dev
+kubectl scale deployment nginx-deployment --replicas=2 -n dev
+kubectl set image deployment/nginx-deployment nginx=nginx:1.25 -n dev
+kubectl rollout undo deployment/nginx-deployment -n dev
+```
