@@ -1,0 +1,98 @@
+# ==========================================
+# 1. Basic Nginx Docker Compose File
+# ==========================================
+
+services:
+  nginx:
+    image: nginx
+    ports:
+      - "8080:80"
+
+---
+
+# ==========================================
+# 2. WordPress + MySQL Multi-Container Setup
+# ==========================================
+
+services:
+
+  db:
+    image: mysql:5.7
+    restart: always
+
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wpuser
+      MYSQL_PASSWORD: wppassword
+
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  wordpress:
+    image: wordpress
+    restart: always
+
+    ports:
+      - "8081:80"
+
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: wpuser
+      WORDPRESS_DB_PASSWORD: wppassword
+      WORDPRESS_DB_NAME: wordpress
+
+    depends_on:
+      - db
+
+volumes:
+  mysql-data:
+
+---
+
+# ======================================
+# 3. Docker Compose Using .env Variables
+# ======================================
+
+services:
+
+  db:
+    image: mysql:5.7
+
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  wordpress:
+    image: wordpress
+
+    ports:
+      - "8081:80"
+
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: ${MYSQL_USER}
+      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
+      WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
+
+    depends_on:
+      - db
+
+volumes:
+  mysql-data:
+
+---
+
+# ====================
+# .env File Example
+# ====================
+
+MYSQL_ROOT_PASSWORD=rootpassword
+MYSQL_DATABASE=wordpress
+MYSQL_USER=wpuser
+MYSQL_PASSWORD=wppassword
